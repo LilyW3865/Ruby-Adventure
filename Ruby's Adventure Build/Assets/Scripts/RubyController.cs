@@ -1,12 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RubyController : MonoBehaviour
 {
     public float speed = 3.0f;
     public int maxHealth = 5;
     public GameObject projectilePrefab;
+    public ParticleSystem damageparticles;
+    public ParticleSystem healthparticles;
     public AudioClip throwSound;
     public AudioClip hitSound;
     public int health { get { return currentHealth; }}
@@ -17,6 +23,12 @@ public class RubyController : MonoBehaviour
     Rigidbody2D rigidbody2d;
     float horizontal; 
     float vertical;
+    public int score = 0;
+    public GameObject ScoreText;
+    public GameObject GameText;
+    TextMeshProUGUI ScoreText_text;
+    TextMeshProUGUI GameText_text;
+    bool Gameover;
     Animator animator;
     Vector2 lookDirection = new Vector2(1,0);
     AudioSource audioSource;
@@ -28,9 +40,11 @@ public class RubyController : MonoBehaviour
         animator = GetComponent<Animator>();
 
         currentHealth = maxHealth;
-        
+
         audioSource = GetComponent<AudioSource>();
-     
+
+        ScoreText_text = ScoreText.GetComponent<TextMeshProUGUI>();
+        GameText_text = GameText.GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -75,6 +89,33 @@ public class RubyController : MonoBehaviour
                 }
             }
         }
+
+       ScoreText_text.text = "Fixed Robots: " + score.ToString();
+
+       if(currentHealth < 1)
+       {
+            Gameover = true;
+            GameText.SetActive(true);
+            speed = 0;
+            GameText_text.text = "You lost! Press R to Restart!";
+            
+            if(Gameover == true)
+            {
+                if(Input.GetKeyDown(KeyCode.R))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                }
+            }
+       }
+
+       if(score == 2)
+       {
+            Gameover = true;
+            GameText.SetActive(true);
+            speed = 0;
+            GameText_text.text = "You Win! Game Created by Group 37!";
+       }
+        
     }
 
     void FixedUpdate()
@@ -88,7 +129,7 @@ public class RubyController : MonoBehaviour
 
     public void ChangeHealth(int amount)
     {
-        if (amount < 0)
+        if(amount < 0)
         {
             animator.SetTrigger("Hit");
             if (isInvincible)
@@ -96,13 +137,24 @@ public class RubyController : MonoBehaviour
             
             isInvincible = true;
             invincibleTimer = timeInvincible;
+            ParticleSystem DamageEffect = Instantiate(damageparticles, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
 
             PlaySound(hitSound);
+        }
+
+        if(amount > 0)
+        {
+            ParticleSystem HealthEffect = Instantiate(healthparticles, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);   
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
 
+    }
+
+    public void ChangeScore(int ScoreAmount)
+    {
+        score += ScoreAmount;
     }
 
     void Launch()

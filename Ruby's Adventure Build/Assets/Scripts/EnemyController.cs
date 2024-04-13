@@ -13,12 +13,27 @@ public class EnemyController : MonoBehaviour
     int direction = 1;
     bool broken = true;
     Animator animator;
-    
+    private RubyController rubyController;
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;
         animator = GetComponent<Animator>();
+
+        GameObject rubyControllerObject = GameObject.FindWithTag("RubyController");
+
+        if (rubyControllerObject != null)
+
+        {
+            rubyController = rubyControllerObject.GetComponent<RubyController>(); 
+            print ("Found the RubyConroller Script!");
+        }
+
+        if (rubyController == null)
+
+        {
+            print ("Cannot find GameController Script!");
+        }
         
     }
 
@@ -74,5 +89,10 @@ public class EnemyController : MonoBehaviour
         animator.SetTrigger("Fixed");
 
         smokeEffect.Stop();
+
+        if (rubyController != null)
+        {
+            rubyController.ChangeScore(1);    
+        }
     }
 }
