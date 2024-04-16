@@ -15,6 +15,8 @@ public class RubyController : MonoBehaviour
     public ParticleSystem healthparticles;
     public AudioClip throwSound;
     public AudioClip hitSound;
+    public AudioClip winSound; //Line of code created by Lilian Wagner. Creates a public audio clip named winSound
+    public AudioClip loseSound; //Line of code created by Lilian Wagner. Creates a public audio clip named loseSound
     public int health { get { return currentHealth; }}
     int currentHealth;
     public float timeInvincible = 2.0f;
@@ -26,8 +28,10 @@ public class RubyController : MonoBehaviour
     public int score = 0;
     public GameObject ScoreText;
     public GameObject GameText;
+    public GameObject SpeedText; //This line of code was written by Lilian Wagner. It creates a public game object named SpeedText
     TextMeshProUGUI ScoreText_text;
     TextMeshProUGUI GameText_text;
+    TextMeshProUGUI SpeedText_text; //This line of code was written by Lilian Wagner. It creates a TextMeshProUGUI variable named SpeedText_text
     bool Gameover;
     Animator animator;
     Vector2 lookDirection = new Vector2(1,0);
@@ -45,6 +49,7 @@ public class RubyController : MonoBehaviour
 
         ScoreText_text = ScoreText.GetComponent<TextMeshProUGUI>();
         GameText_text = GameText.GetComponent<TextMeshProUGUI>();
+        SpeedText_text = SpeedText.GetComponent<TextMeshProUGUI>(); //This line of code was written by Lilian Wagner. It sets the SpeedText_text variable equal to the SpeedText varaible which is attached to the TextMeshProUGUI component
     }
 
     // Update is called once per frame
@@ -91,6 +96,7 @@ public class RubyController : MonoBehaviour
         }
 
        ScoreText_text.text = "Fixed Robots: " + score.ToString();
+       SpeedText_text.text = "Speed: " + speed.ToString(); //This line of code was written by Lilian Wagner. It creates the actual text in the SpeedText_text varaible and updates it
 
        if(currentHealth < 1)
        {
@@ -101,10 +107,12 @@ public class RubyController : MonoBehaviour
             
             if(Gameover == true)
             {
+                PlaySound(loseSound); //This line of code was written by Lilian Wagner, and adds a new sound effect that plays when the player loses the game
                 if(Input.GetKeyDown(KeyCode.R))
                 {
                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 }
+                
             }
        }
 
@@ -112,6 +120,8 @@ public class RubyController : MonoBehaviour
        {
             Gameover = true;
             GameText.SetActive(true);
+            PlaySound(winSound); //This line of code was written by Lilian Wagner, and adds a new sound effect that plays when the player wins the game
+
             speed = 0;
             GameText_text.text = "You Win! Game Created by Group 37!";
        }
@@ -172,6 +182,5 @@ public class RubyController : MonoBehaviour
     {
         audioSource.PlayOneShot(clip);
     }
-
 
 }
