@@ -17,7 +17,7 @@ public class PotionCollectible : MonoBehaviour
 
         if (controller != null)
         {
-            controller.speed = 6.0f;
+            controller.speed = 8.0f; // Teman Washington + Lilian - Alters character base speed
             Destroy(gameObject);
         }
     }
